@@ -1,0 +1,26 @@
+#!/bin/bash
+
+WIFI_DEETS=`iwconfig 2> /dev/null | grep -o 'ESSID:.*' | cut -c7- | tr -d '"' | sed 's/ *$//g'`
+BATTERY_DEETS=`acpi | cut -c12-`
+
+TIME_DEETS=$(date "+%X")
+DATE_DEETS=$(date "+%x")
+
+if [[ $WIFI_DEETS == *"off"* ]]; then
+  WIFI_DEETS='Disabled'
+fi
+
+VOLUME_DEETS=`pulseaudio-ctl | grep Volume | awk -F: '{ print $2 }' | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g"`
+MUTED_DEETS=`pulseaudio-ctl | grep muted | awk -F: '{ print $2 }' | head -1 | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g"`
+
+if [[ $MUTED_DEETS == " yes" ]]; then
+  VOLUME_DEETS="$VOLUME_DEETS (muted)"
+fi
+
+if [[ $(playerctl -l) == *"spotify"* ]]; then
+  TRACK_DEETS="$(playerctl metadata "xesam:artist") - $(playerctl metadata "xesam:title") ($(playerctl status))"
+else
+  TRACK_DEETS="Nothing playing"
+fi
+
+ratpoison -c "echo $(echo "Volume: $VOLUME_DEETS"; echo "Music:   $TRACK_DEETS"; echo "Wifi:    $WIFI_DEETS"; echo "Battery: $BATTERY_DEETS"; echo "Date:    $DATE_DEETS"; echo "Time:    $TIME_DEETS";)"
