@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ratpoison -c "select `ratpoison -c windows | tr '[[:upper:]]' '[[:lower:]]' | dmenu | head -c1`"
