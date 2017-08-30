@@ -1,0 +1,19 @@
+#!/bin/bash
+
+THIS=$1
+THAT=$2
+
+if [[ "$THIS" == "" ]]; then
+  echo "Can't replace nothing dummy"
+fi
+
+FILES=$(git grep -l $THIS)
+COUNT=$(echo "$FILES" | wc -l)
+
+echo "Replacing $THIS with $THAT in $COUNT files"
+echo "Are you sure? [y/N]"
+read okay
+
+if [[ "$okay" == "y" ]]; then
+  git grep -l "${THIS}" | xargs sed -i "s/${THIS}/${THAT}/g"
+fi

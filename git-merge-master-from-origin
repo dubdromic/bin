@@ -1,0 +1,10 @@
+#!/bin/bash
+
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+# git stash
+git checkout master
+git pull origin master
+git checkout $BRANCH
+git merge master
+# git stash pop
