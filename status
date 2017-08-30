@@ -9,7 +9,7 @@ TRACK_DEETS="Nothing playing"
 
 if [[ `uname` == "Linux" ]]; then
   # WIFI_DEETS=`iwconfig 2> /dev/null | grep -o 'ESSID:.*' | cut -c7- | tr -d '"' | sed 's/ *$//g'`
-  WIFI_DEETS=`iw dev | grep Interface | awk '{ print $2 }' | xargs -I "{}" iw dev "{}" link | grep SSID | tr -d SSID\: | awk '{$1=$1};1'`
+  WIFI_DEETS=`iw dev | grep Interface | awk '{ print $2 }' | xargs -I "{}" iw dev "{}" link | grep SSID | sed 's/SSID\://' | awk '{$1=$1};1'`
   echo "$WIFI_DEETS"
   BATTERY_DEETS=`acpi | cut -c12-`
 
